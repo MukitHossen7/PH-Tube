@@ -35,12 +35,15 @@ const displayVideos = (videos) => {
       <figure class="w-full h-52">
     <img src="${video.thumbnail}" alt = "Videos" class="w-full h-full object-cover" />
   </figure>
-  <div class="card-body">
-    <h2 class="card-title">Shoes!</h2>
-    <p>If a dog chews shoes whose shoes does he choose?</p>
-    <div class="card-actions justify-end">
-      <button class="btn btn-primary">Buy Now</button>
+  <div class="px-0 py-5 flex gap-4">
+   <img class="w-10 h-10 rounded-full object-cover" src="${video.authors[0].profile_picture}" alt="">
+   <div>
+    <h2 class="font-bold text-lg mb-2">${video.title}</h2>
+    <div class="flex items-center gap-2">
+      <p class="text-sm  text-slate-500">${video.authors[0].profile_name}</p>
+      <img class="w-5" src="https://img.icons8.com/?size=48&id=D9RtvkuOe31p&format=png" alt="">
     </div>
+   </div>
   </div>
       `;
     cardSection.append(card);
