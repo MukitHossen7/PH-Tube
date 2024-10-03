@@ -16,9 +16,34 @@ function getTimeString(times) {
 const loadCategoryVideos = (id) => {
   fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
     .then((res) => res.json())
-    .then((data) => displayVideos(data.category))
+    .then((data) => {
+      let activeBtn = document.getElementById(`btn-${id}`);
+      activeBtn.classList.add("active");
+      displayVideos(data.category);
+    })
     .catch((error) => console.log(error));
 };
+
+// view-details-function-start
+const viewDetailsLoad = async (videoId) => {
+  const res = await fetch(
+    `https://openapi.programming-hero.com/api/phero-tube/video/${videoId}`
+  );
+  const data = await res.json();
+  displayViewDetails(data.video);
+};
+// view-details-function-end
+
+// display-view-Details-start
+const displayViewDetails = (viewData) => {
+  const modalContainer = document.getElementById("modal-container");
+  modalContainer.innerHTML = `
+    <img src="${viewData.thumbnail}"/>
+    <p class="pt-3 text-slate-500 font-semibold">${viewData.description}</p>
+  `;
+  document.getElementById("my_modal").showModal();
+};
+// display-view-Details-end
 
 //Create Dynamic Category Button section
 const loadCategory = () => {
@@ -33,7 +58,7 @@ const displayCategory = (categories) => {
   categories.map((item) => {
     const div = document.createElement("div");
     div.innerHTML = `
-      <button onclick="loadCategoryVideos(${item.category_id})" class="btn">${item.category}</button>
+      <button id="btn-${item.category_id}" class="btn category-btn" onclick="loadCategoryVideos(${item.category_id})">${item.category}</button>
     `;
     showCategory.appendChild(div);
   });
@@ -49,8 +74,18 @@ const loadVideos = () => {
 const displayVideos = (videos) => {
   const cardSection = document.getElementById("card-section");
   cardSection.innerHTML = "";
+  if (videos.length == 0) {
+    cardSection.classList.remove("grid");
+    cardSection.innerHTML = /*html*/ `
+        <div class="max-w-xs mx-auto flex gap-5 justify-center items-center flex-col pt-16">
+        <img src="./images/Icon.png">
+        <h3 class="font-bold text-2xl text-center">Oops!! Sorry,There is no content here</h3>
+        </div>
+    `;
+  } else {
+    cardSection.classList.add("grid");
+  }
   videos.forEach((video) => {
-    console.log(video);
     const card = document.createElement("div");
     card.classList = "card card-compact";
     card.innerHTML = /*html*/ `
@@ -83,6 +118,9 @@ const displayVideos = (videos) => {
     }
       
     </div>
+    <button onclick="viewDetailsLoad('${
+      video.video_id
+    }')" class="btn btn-error px-5 mt-2">Details</button>
    </div>
   </div>
       `;
