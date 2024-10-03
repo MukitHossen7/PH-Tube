@@ -1,5 +1,26 @@
-//Create Dynamic Category Button section
+// converts time function
+function getTimeString(times) {
+  const date = new Date(times * 1000);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
 
+  // return `${year}year ${month}month ${hours}hrs ${minutes}min ago`;
+  return `${hours}hrs ${minutes}min ago`;
+}
+
+//Video based on Catagory [ params ] function
+const loadCategoryVideos = (id) => {
+  fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
+    .then((res) => res.json())
+    .then((data) => displayVideos(data.category))
+    .catch((error) => console.log(error));
+};
+
+//Create Dynamic Category Button section
 const loadCategory = () => {
   fetch("https://openapi.programming-hero.com/api/phero-tube/categories")
     .then((res) => res.json())
@@ -10,11 +31,11 @@ const loadCategory = () => {
 const displayCategory = (categories) => {
   const showCategory = document.getElementById("showCategory");
   categories.map((item) => {
-    console.log(item);
-    const button = document.createElement("button");
-    button.classList = "btn";
-    button.innerText = item.category;
-    showCategory.appendChild(button);
+    const div = document.createElement("div");
+    div.innerHTML = `
+      <button onclick="loadCategoryVideos(${item.category_id})" class="btn">${item.category}</button>
+    `;
+    showCategory.appendChild(div);
   });
 };
 // Create Dynamic Video Sections
@@ -27,6 +48,7 @@ const loadVideos = () => {
 
 const displayVideos = (videos) => {
   const cardSection = document.getElementById("card-section");
+  cardSection.innerHTML = "";
   videos.forEach((video) => {
     console.log(video);
     const card = document.createElement("div");
@@ -67,20 +89,6 @@ const displayVideos = (videos) => {
     cardSection.append(card);
   });
 };
-
-// converts time function
-function getTimeString(times) {
-  const date = new Date(times * 1000);
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const seconds = date.getSeconds();
-
-  // return `${year}year ${month}month ${hours}hrs ${minutes}min ago`;
-  return `${hours}hrs ${minutes}min ago`;
-}
 
 loadCategory();
 loadVideos();
